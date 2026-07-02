@@ -1,0 +1,10 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Locked down by default. Open specific collections up as they're built.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -1,8 +1,8 @@
-import { CtaBanner } from "@/components/cta-banner";
-import { HeroSection } from "@/components/hero-section";
-import { HowItWorks } from "@/components/how-it-works";
-import { SiteHeader } from "@/components/site-header";
-import { TrustStrip } from "@/components/trust-strip";
+import { CtaBanner } from "@/components/site/cta-banner";
+import { HeroSection } from "@/components/site/hero-section";
+import { HowItWorks } from "@/components/site/how-it-works";
+import { SiteHeader } from "@/components/site/site-header";
+import { TrustStrip } from "@/components/site/trust-strip";
 
 export default function Home() {
   return (

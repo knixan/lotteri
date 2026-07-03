@@ -1,8 +1,15 @@
-import { Shield } from "lucide-react";
+import { Menu, Shield } from "lucide-react";
 import Link from "next/link";
 
 import { HeaderAuthActions } from "@/components/site/header-auth-actions";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const navLinks = [
   { href: "/", label: "Hem" },
@@ -44,6 +51,26 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <HeaderAuthActions />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10 hover:text-brand-foreground lg:hidden"
+                aria-label="Öppna meny"
+              >
+                <Menu className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {navLinks.map((link) => (
+                <DropdownMenuItem key={link.href} asChild>
+                  <Link href={link.href}>{link.label}</Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

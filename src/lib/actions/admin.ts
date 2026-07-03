@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 
 import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
+import { getTicketsForLottery } from "@/lib/firestore/lotteries";
 import {
   adminLotteryInputSchema,
   type AdminLotteryInput,
+  type Ticket,
 } from "@/lib/types/lottery";
 
 type ActionResult = { success: true } | { success: false; error: string };
@@ -17,6 +19,30 @@ async function requireAdminUid(idToken: string): Promise<string> {
     throw new Error("NOT_ADMIN");
   }
   return decoded.uid;
+}
+
+// Ticket buyer names/emails are PII, so they must never be fetched in a
+// Server Component (RequireAdmin only gates rendering client-side, after
+// the sensitive data has already been serialized into the RSC payload).
+// Routing this through the same idToken-verified pattern as the mutations
+// above means the data is only ever sent to a caller already proven admin.
+export async function getTicketsForLotteryAdmin(
+  idToken: string,
+  lotteryId: string,
+): Promise<
+  { success: true; tickets: Ticket[] } | { success: false; error: string }
+> {
+  try {
+    await requireAdminUid(idToken);
+  } catch {
+    return {
+      success: false,
+      error: "Du har inte behörighet att göra det här.",
+    };
+  }
+
+  const tickets = await getTicketsForLottery(lotteryId);
+  return { success: true, tickets };
 }
 
 function revalidateLotteryPaths(lotteryId?: string) {

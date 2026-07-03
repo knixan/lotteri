@@ -3,15 +3,10 @@ import { notFound } from "next/navigation";
 
 import { DrawWinnerButton } from "@/components/admin/draw-winner-button";
 import { LotteryForm } from "@/components/admin/lottery-form";
+import { LotteryTickets } from "@/components/admin/lottery-tickets";
 import { RequireAdmin } from "@/components/auth/require-admin";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { formatDrawDate } from "@/lib/date";
-import {
-  getLotteryById,
-  getTicketsForLottery,
-} from "@/lib/firestore/lotteries";
+import { getLotteryById } from "@/lib/firestore/lotteries";
 
 // Admin data (ticket sales, buyer info) must never be baked into a static
 // build shared across all requests.
@@ -33,16 +28,11 @@ export default async function EditLotteryPage({
   params: Promise<{ lotteryId: string }>;
 }) {
   const { lotteryId } = await params;
-  const [lottery, tickets] = await Promise.all([
-    getLotteryById(lotteryId),
-    getTicketsForLottery(lotteryId),
-  ]);
+  const lottery = await getLotteryById(lotteryId);
 
   if (!lottery) {
     notFound();
   }
-
-  const winner = tickets.find((ticket) => ticket.isWinner);
 
   return (
     <RequireAdmin>
@@ -64,41 +54,7 @@ export default async function EditLotteryPage({
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex-row items-center justify-between">
-            <CardTitle className="text-lg">
-              Sålda lotter ({tickets.length})
-            </CardTitle>
-            {winner && <Badge>Vinnare: lott #{winner.ticketNumber}</Badge>}
-          </CardHeader>
-          <CardContent>
-            {tickets.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                Inga lotter sålda än.
-              </p>
-            ) : (
-              <div className="flex flex-col">
-                {tickets.map((ticket, index) => (
-                  <div key={ticket.id}>
-                    {index > 0 && <Separator />}
-                    <div className="flex items-center justify-between py-2 text-sm">
-                      <span>
-                        #{ticket.ticketNumber} · {ticket.buyerName} (
-                        {ticket.buyerEmail})
-                      </span>
-                      <span className="flex items-center gap-2 text-muted-foreground">
-                        {formatDrawDate(ticket.purchasedAt)}
-                        {ticket.isWinner && (
-                          <Badge variant="secondary">Vinnare</Badge>
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <LotteryTickets lotteryId={lottery.id} />
       </div>
     </RequireAdmin>
   );

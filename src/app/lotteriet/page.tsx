@@ -26,8 +26,8 @@ export default async function LotteriesPage() {
       <div className="mb-10">
         <h1 className="text-3xl font-bold tracking-tight">Våra lotterier</h1>
         <p className="mt-2 text-muted-foreground">
-          Välj ett lotteri och köp dina lotter – hela överskottet går till
-          barn- och ungdomsidrotten i Mjölby.
+          Välj ett lotteri och köp dina lotter – hela överskottet går till barn-
+          och ungdomsidrotten i Mjölby.
         </p>
       </div>
 
@@ -42,7 +42,11 @@ export default async function LotteriesPage() {
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle>{lottery.title}</CardTitle>
-                  <Badge variant={lottery.status === "open" ? "default" : "secondary"}>
+                  <Badge
+                    variant={
+                      lottery.status === "open" ? "default" : "secondary"
+                    }
+                  >
                     {lottery.status === "open" ? "Öppet" : "Stängt"}
                   </Badge>
                 </div>

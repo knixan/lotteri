@@ -26,7 +26,7 @@ function findJdk21Plus() {
     readdirSync(root)
       .map((name) => name.match(/^jdk-(\d+)/))
       .filter(Boolean)
-      .map((match) => ({ root, name: match.input, major: Number(match[1]) }))
+      .map((match) => ({ root, name: match.input, major: Number(match[1]) })),
   );
 
   const best = candidates
@@ -40,17 +40,20 @@ const env = { ...process.env };
 // process.env's PATH lookup is case-insensitive on Windows (it's "Path", not
 // "PATH"), but a plain spread loses that: `env.PATH = ...` would silently
 // create a second, conflicting key instead of updating the real one.
-const pathKey = Object.keys(env).find((key) => key.toLowerCase() === "path") ?? "PATH";
+const pathKey =
+  Object.keys(env).find((key) => key.toLowerCase() === "path") ?? "PATH";
 const currentMajor = javaMajorVersion("java");
 
 if (currentMajor === null || currentMajor < MIN_JAVA_MAJOR) {
   const jdkBin = findJdk21Plus();
   if (jdkBin) {
-    console.log(`[emulators] PATH has Java ${currentMajor ?? "none"}; using JDK at ${jdkBin} instead.`);
+    console.log(
+      `[emulators] PATH has Java ${currentMajor ?? "none"}; using JDK at ${jdkBin} instead.`,
+    );
     env[pathKey] = `${jdkBin}${path.delimiter}${env[pathKey] ?? ""}`;
   } else {
     console.warn(
-      `[emulators] No JDK ${MIN_JAVA_MAJOR}+ found. Install one (e.g. Eclipse Temurin) and try again.`
+      `[emulators] No JDK ${MIN_JAVA_MAJOR}+ found. Install one (e.g. Eclipse Temurin) and try again.`,
     );
   }
 }

@@ -36,9 +36,7 @@ export function AuthCard({
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           {children}
-          <p className="text-center text-sm text-muted-foreground">
-            {footer}
-          </p>
+          <p className="text-center text-sm text-muted-foreground">{footer}</p>
         </CardContent>
       </Card>
     </div>

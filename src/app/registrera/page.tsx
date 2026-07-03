@@ -16,7 +16,10 @@ export default function SignUpPage() {
       footer={
         <>
           Har du redan ett konto?{" "}
-          <Link href="/logga-in" className="font-medium text-primary underline underline-offset-4">
+          <Link
+            href="/logga-in"
+            className="font-medium text-primary underline underline-offset-4"
+          >
             Logga in
           </Link>
         </>

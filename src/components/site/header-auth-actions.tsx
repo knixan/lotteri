@@ -27,7 +27,9 @@ export function HeaderAuthActions() {
   }
 
   if (loading) {
-    return <div className="h-9 w-24 animate-pulse rounded-md bg-brand-foreground/10" />;
+    return (
+      <div className="h-9 w-24 animate-pulse rounded-md bg-brand-foreground/10" />
+    );
   }
 
   if (user) {
@@ -80,7 +82,10 @@ export function HeaderAuthActions() {
           Logga in
         </Link>
       </Button>
-      <Button asChild className="bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90">
+      <Button
+        asChild
+        className="bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90"
+      >
         <Link href="/lotteriet">Köp lotter</Link>
       </Button>
     </>

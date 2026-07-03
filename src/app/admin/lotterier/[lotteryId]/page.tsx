@@ -5,15 +5,13 @@ import { DrawWinnerButton } from "@/components/admin/draw-winner-button";
 import { LotteryForm } from "@/components/admin/lottery-form";
 import { RequireAdmin } from "@/components/auth/require-admin";
 import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { formatDrawDate } from "@/lib/date";
-import { getLotteryById, getTicketsForLottery } from "@/lib/firestore/lotteries";
+import {
+  getLotteryById,
+  getTicketsForLottery,
+} from "@/lib/firestore/lotteries";
 
 export async function generateMetadata({
   params,
@@ -86,7 +84,9 @@ export default async function EditLotteryPage({
                       </span>
                       <span className="flex items-center gap-2 text-muted-foreground">
                         {formatDrawDate(ticket.purchasedAt)}
-                        {ticket.isWinner && <Badge variant="secondary">Vinnare</Badge>}
+                        {ticket.isWinner && (
+                          <Badge variant="secondary">Vinnare</Badge>
+                        )}
                       </span>
                     </div>
                   </div>

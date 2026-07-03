@@ -1,10 +1,18 @@
 import "server-only";
 
 import { adminDb } from "@/lib/firebase/admin";
-import { lotterySchema, ticketSchema, type Lottery, type Ticket } from "@/lib/types/lottery";
+import {
+  lotterySchema,
+  ticketSchema,
+  type Lottery,
+  type Ticket,
+} from "@/lib/types/lottery";
 
 export async function getLotteries(): Promise<Lottery[]> {
-  const snapshot = await adminDb.collection("lotteries").orderBy("drawAt").get();
+  const snapshot = await adminDb
+    .collection("lotteries")
+    .orderBy("drawAt")
+    .get();
 
   return snapshot.docs
     .map((doc) => lotterySchema.safeParse({ id: doc.id, ...doc.data() }))
@@ -33,7 +41,9 @@ export async function getUserTickets(userId: string): Promise<Ticket[]> {
     .sort((a, b) => b.purchasedAt.localeCompare(a.purchasedAt));
 }
 
-export async function getTicketsForLottery(lotteryId: string): Promise<Ticket[]> {
+export async function getTicketsForLottery(
+  lotteryId: string,
+): Promise<Ticket[]> {
   const snapshot = await adminDb
     .collection("lotteries")
     .doc(lotteryId)

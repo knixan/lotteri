@@ -23,7 +23,7 @@ export function DrawWinnerButton({
     if (!user) return;
     if (
       !window.confirm(
-        "Är du säker? Det här stänger lotteriet för köp och drar en vinnare bland sålda lotter."
+        "Är du säker? Det här stänger lotteriet för köp och drar en vinnare bland sålda lotter.",
       )
     ) {
       return;

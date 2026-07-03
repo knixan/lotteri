@@ -12,9 +12,13 @@ import type { UserProfile } from "@/lib/types/user";
 export async function signUpWithEmail(
   name: string,
   email: string,
-  password: string
+  password: string,
 ) {
-  const credential = await createUserWithEmailAndPassword(auth, email, password);
+  const credential = await createUserWithEmailAndPassword(
+    auth,
+    email,
+    password,
+  );
   await updateProfile(credential.user, { displayName: name });
 
   const profile: UserProfile = {

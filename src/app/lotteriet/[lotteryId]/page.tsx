@@ -15,7 +15,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { lotteryId } = await params;
   const lottery = await getLotteryById(lotteryId);
-  return { title: lottery ? `${lottery.title} – Mjölby Idrottslotteri` : "Lotteri" };
+  return {
+    title: lottery ? `${lottery.title} – Mjölby Idrottslotteri` : "Lotteri",
+  };
 }
 
 export default async function LotteryDetailPage({

@@ -3,7 +3,10 @@
 import { revalidatePath } from "next/cache";
 
 import { adminAuth, adminDb } from "@/lib/firebase/admin";
-import { adminLotteryInputSchema, type AdminLotteryInput } from "@/lib/types/lottery";
+import {
+  adminLotteryInputSchema,
+  type AdminLotteryInput,
+} from "@/lib/types/lottery";
 
 type ActionResult = { success: true } | { success: false; error: string };
 
@@ -27,7 +30,7 @@ function revalidateLotteryPaths(lotteryId?: string) {
 
 export async function createLottery(
   idToken: string,
-  input: AdminLotteryInput
+  input: AdminLotteryInput,
 ): Promise<ActionResult & { id?: string }> {
   const parsed = adminLotteryInputSchema.safeParse(input);
   if (!parsed.success) {
@@ -37,7 +40,10 @@ export async function createLottery(
   try {
     await requireAdminUid(idToken);
   } catch {
-    return { success: false, error: "Du har inte behörighet att göra det här." };
+    return {
+      success: false,
+      error: "Du har inte behörighet att göra det här.",
+    };
   }
 
   const ref = adminDb.collection("lotteries").doc();
@@ -54,7 +60,7 @@ export async function createLottery(
 export async function updateLottery(
   idToken: string,
   lotteryId: string,
-  input: AdminLotteryInput
+  input: AdminLotteryInput,
 ): Promise<ActionResult> {
   const parsed = adminLotteryInputSchema.safeParse(input);
   if (!parsed.success) {
@@ -64,7 +70,10 @@ export async function updateLottery(
   try {
     await requireAdminUid(idToken);
   } catch {
-    return { success: false, error: "Du har inte behörighet att göra det här." };
+    return {
+      success: false,
+      error: "Du har inte behörighet att göra det här.",
+    };
   }
 
   await adminDb.collection("lotteries").doc(lotteryId).update(parsed.data);
@@ -75,12 +84,15 @@ export async function updateLottery(
 
 export async function drawWinner(
   idToken: string,
-  lotteryId: string
+  lotteryId: string,
 ): Promise<ActionResult & { winnerTicketNumber?: number }> {
   try {
     await requireAdminUid(idToken);
   } catch {
-    return { success: false, error: "Du har inte behörighet att göra det här." };
+    return {
+      success: false,
+      error: "Du har inte behörighet att göra det här.",
+    };
   }
 
   const lotteryRef = adminDb.collection("lotteries").doc(lotteryId);
@@ -99,7 +111,9 @@ export async function drawWinner(
   }
 
   const winnerDoc =
-    ticketsSnapshot.docs[Math.floor(Math.random() * ticketsSnapshot.docs.length)];
+    ticketsSnapshot.docs[
+      Math.floor(Math.random() * ticketsSnapshot.docs.length)
+    ];
   await winnerDoc.ref.update({ isWinner: true });
 
   revalidateLotteryPaths(lotteryId);

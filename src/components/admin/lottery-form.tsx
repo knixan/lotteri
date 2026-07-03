@@ -155,7 +155,11 @@ export function LotteryForm({ lottery }: { lottery?: Lottery }) {
         </div>
 
         <Button type="submit" disabled={submitting} className="w-fit">
-          {submitting ? "Sparar…" : lottery ? "Spara ändringar" : "Skapa lotteri"}
+          {submitting
+            ? "Sparar…"
+            : lottery
+              ? "Spara ändringar"
+              : "Skapa lotteri"}
         </Button>
       </FieldGroup>
     </form>

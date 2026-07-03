@@ -5,12 +5,7 @@ import Link from "next/link";
 import { RequireAdmin } from "@/components/auth/require-admin";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDrawDate } from "@/lib/date";
 import { getLotteries } from "@/lib/firestore/lotteries";
 
@@ -45,7 +40,11 @@ export default async function AdminPage() {
               <Card className="transition-colors hover:bg-muted/40">
                 <CardHeader className="flex-row items-center justify-between">
                   <CardTitle className="text-lg">{lottery.title}</CardTitle>
-                  <Badge variant={lottery.status === "open" ? "default" : "secondary"}>
+                  <Badge
+                    variant={
+                      lottery.status === "open" ? "default" : "secondary"
+                    }
+                  >
                     {lottery.status === "open" ? "Öppet" : "Stängt"}
                   </Badge>
                 </CardHeader>

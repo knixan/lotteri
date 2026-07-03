@@ -9,7 +9,9 @@ function createAdminApp() {
 
   // Emulator suite doesn't need real credentials, just a project id.
   if (process.env.FIRESTORE_EMULATOR_HOST) {
-    return initializeApp({ projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID });
+    return initializeApp({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    });
   }
 
   return initializeApp({

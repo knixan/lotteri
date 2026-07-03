@@ -1,6 +1,12 @@
 "use client";
 
-import { collection, collectionGroup, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  collectionGroup,
+  getDocs,
+  query,
+  where,
+} from "firebase/firestore";
 import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -8,7 +14,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDrawDate } from "@/lib/date";
 import { db } from "@/lib/firebase/client";
-import { lotterySchema, ticketSchema, type Lottery, type Ticket } from "@/lib/types/lottery";
+import {
+  lotterySchema,
+  ticketSchema,
+  type Lottery,
+  type Ticket,
+} from "@/lib/types/lottery";
 
 export function MyTickets() {
   const { user } = useAuth();
@@ -20,7 +31,7 @@ export function MyTickets() {
 
     async function load() {
       const ticketsSnapshot = await getDocs(
-        query(collectionGroup(db, "tickets"), where("userId", "==", user!.uid))
+        query(collectionGroup(db, "tickets"), where("userId", "==", user!.uid)),
       );
       const parsedTickets = ticketsSnapshot.docs
         .map((doc) => ticketSchema.safeParse({ id: doc.id, ...doc.data() }))
@@ -47,9 +58,7 @@ export function MyTickets() {
 
   if (tickets.length === 0) {
     return (
-      <p className="text-muted-foreground">
-        Du har inte köpt några lotter än.
-      </p>
+      <p className="text-muted-foreground">Du har inte köpt några lotter än.</p>
     );
   }
 

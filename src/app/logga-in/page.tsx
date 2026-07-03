@@ -16,7 +16,10 @@ export default function LoginPage() {
       footer={
         <>
           Inget konto än?{" "}
-          <Link href="/registrera" className="font-medium text-primary underline underline-offset-4">
+          <Link
+            href="/registrera"
+            className="font-medium text-primary underline underline-offset-4"
+          >
             Skapa konto
           </Link>
         </>

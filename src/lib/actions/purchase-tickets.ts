@@ -9,7 +9,7 @@ type PurchaseResult = { success: true } | { success: false; error: string };
 
 export async function purchaseTickets(
   idToken: string,
-  input: { lotteryId: string; quantity: number }
+  input: { lotteryId: string; quantity: number },
 ): Promise<PurchaseResult> {
   const parsed = purchaseTicketSchema.safeParse(input);
   if (!parsed.success) {
@@ -20,7 +20,10 @@ export async function purchaseTickets(
   try {
     decoded = await adminAuth.verifyIdToken(idToken);
   } catch {
-    return { success: false, error: "Du måste vara inloggad för att köpa lotter." };
+    return {
+      success: false,
+      error: "Du måste vara inloggad för att köpa lotter.",
+    };
   }
 
   const { lotteryId, quantity } = parsed.data;

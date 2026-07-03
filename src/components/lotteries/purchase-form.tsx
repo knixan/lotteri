@@ -39,7 +39,7 @@ export function PurchaseForm({
       const result = await purchaseTickets(idToken, { lotteryId, quantity });
       if (result.success) {
         toast.success(
-          `Du köpte ${quantity} ${quantity === 1 ? "lott" : "lotter"}! Lycka till.`
+          `Du köpte ${quantity} ${quantity === 1 ? "lott" : "lotter"}! Lycka till.`,
         );
         router.refresh();
       } else {
@@ -70,7 +70,7 @@ export function PurchaseForm({
           value={quantity}
           onChange={(event) =>
             setQuantity(
-              Math.min(20, Math.max(1, Number(event.target.value) || 1))
+              Math.min(20, Math.max(1, Number(event.target.value) || 1)),
             )
           }
           className="w-24"
@@ -88,11 +88,7 @@ export function PurchaseForm({
         onClick={handlePurchase}
         className="bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90"
       >
-        {submitting
-          ? "Köper…"
-          : user
-            ? "Köp lotter"
-            : "Logga in för att köpa"}
+        {submitting ? "Köper…" : user ? "Köp lotter" : "Logga in för att köpa"}
       </Button>
     </div>
   );

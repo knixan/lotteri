@@ -82,7 +82,7 @@ async function seedAdminUser() {
       role: "admin",
       createdAt: new Date().toISOString(),
     },
-    { merge: true }
+    { merge: true },
   );
 
   console.log(`Seeded admin user: ${email} / ${password}`);

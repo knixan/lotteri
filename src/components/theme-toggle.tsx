@@ -2,7 +2,6 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,22 +12,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  // Avoid a hydration mismatch: the server doesn't know the user's stored
-  // theme preference, so render nothing meaningful until mounted.
-  useEffect(() => setMounted(true), []);
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="Växla tema">
-          {mounted && theme === "dark" ? (
-            <Moon className="size-4" />
-          ) : (
-            <Sun className="size-4" />
-          )}
+        <Button
+          variant="outline"
+          size="icon"
+          aria-label="Växla tema"
+          className="relative"
+        >
+          {/* Both icons always render; the `dark` class (set by next-themes'
+              inline script before paint, straight off localStorage) decides
+              which one is visible purely via CSS. No JS state depends on
+              the theme here, so server and client render identically and
+              there's nothing for hydration to mismatch on. */}
+          <Sun className="size-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
+          <Moon className="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

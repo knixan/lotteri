@@ -1,5 +1,6 @@
 import { Gift, HeartHandshake, ShieldCheck, Ticket } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
@@ -53,18 +54,24 @@ export function HeroSection() {
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button
               size="lg"
+              asChild
               className="bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90"
             >
-              <Ticket className="size-4" />
-              Köp lotter
+              <Link href="/lotteriet">
+                <Ticket className="size-4" />
+                Köp lotter
+              </Link>
             </Button>
             <Button
               size="lg"
               variant="outline"
+              asChild
               className="border-brand-foreground/30 bg-transparent text-brand-foreground hover:bg-brand-foreground/10 hover:text-brand-foreground"
             >
-              <Gift className="size-4" />
-              Se veckans vinster
+              <Link href="/lotteriet">
+                <Gift className="size-4" />
+                Se veckans vinster
+              </Link>
             </Button>
           </div>
 
@@ -88,8 +95,11 @@ export function HeroSection() {
         </span>
         <p className="mt-3 text-3xl font-bold">10 000 kr</p>
         <p className="text-sm text-muted-foreground">Presentkort ICA</p>
-        <Button className="mt-4 w-full bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90">
-          Köp din lott idag!
+        <Button
+          asChild
+          className="mt-4 w-full bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90"
+        >
+          <Link href="/lotteriet/veckans-lotteri">Köp din lott idag!</Link>
         </Button>
       </div>
     </section>

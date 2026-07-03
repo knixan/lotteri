@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Mjölby Idrottslotteri
 
-## Getting Started
+Digitalt lotteri för Mjölby Idrottsförbund. Next.js + Firebase-portfolioprojekt.
 
-First, run the development server:
+## Stack
+
+- **Next.js** (App Router, Server Actions) + TypeScript
+- **Firebase**: Auth, Firestore, Admin SDK, Local Emulator Suite
+- **Tailwind v4** + **shadcn/ui** (`Field`-komponenter, inte den äldre `Form`-wrappern)
+- **react-hook-form** + **zod** för formulär och validering
+- **date-fns** + `Intl` för datum (Europe/Stockholm, hanterar CET/CEST)
+
+## Kom igång
 
 ```bash
+npm install
+
+# Terminal 1 - Firebase-emulatorer (Auth + Firestore)
+npm run emulators
+
+# Terminal 2 - fyll emulatorn med demo-lotterier + en admin-user
+npm run seed
+
+# Terminal 3
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Appen körs mot emulatorn by default (`.env.local`, projekt-id `demo-*`), så inget riktigt
+Firebase-projekt behövs för att utveckla lokalt.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Seedat admin-konto:** `admin@mjolby-if.se` / `admin123456`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Projektstruktur
 
-## Learn More
+```
+src/
+  app/
+    page.tsx                        # startsida (hero, so-funkar-det, etc)
+    logga-in/, registrera/          # auth-sidor
+    lotteriet/page.tsx              # bläddra lotterier (Server Component, Admin SDK)
+    lotteriet/[lotteryId]/page.tsx  # lotteridetalj + köpformulär
+    mina-sidor/page.tsx             # inloggad användares köpta lotter
+    admin/                          # admin-panel (skapa/redigera lotteri, dra vinnare)
 
-To learn more about Next.js, take a look at the following resources:
+  components/
+    site/          # publika sajtens komponenter (header, hero, banners)
+    auth/           # inloggning/registrering, RequireAuth/RequireAdmin-guards
+    lotteries/      # köpformulär
+    mina-sidor/     # biljettlista för inloggad användare
+    admin/          # lotteriformulär, dra-vinnare-knapp
+    ui/             # shadcn-genererade primitiver, rör inte manuellt
+    auth-provider.tsx, theme-provider.tsx, theme-toggle.tsx  # delas av hela appen
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+  hooks/
+    use-auth.ts     # useAuth() - user, profile (roll), loading
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+  lib/
+    firebase/
+      client.ts     # klient-SDK, kopplar mot emulator om NEXT_PUBLIC_USE_FIREBASE_EMULATOR=true
+      admin.ts      # Admin SDK (server-only), för Server Components/Actions
+      auth.ts       # signUpWithEmail/signInWithEmail/signOutUser (klient)
+    actions/
+      purchase-tickets.ts  # köp-flow: verifierar ID-token, transaktion för biljettnumrering
+      admin.ts             # admin-actions: verifierar roll via Admin SDK innan skrivning
+    firestore/
+      lotteries.ts  # server-side reads (getLotteries, getLotteryById, getUserTickets, ...)
+    types/          # zod-scheman + TS-typer (delas mellan formulär och actions)
+    date.ts         # datumformatering, Europe/Stockholm-säker
 
-## Deploy on Vercel
+scripts/
+  run-emulators.mjs   # hittar en JDK 21+ även om PATH pekar på en äldre Java
+  seed-emulator.mjs   # demo-lotterier + admin-user i emulatorn
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+firestore.rules        # säkerhetsregler - se kommentarer i filen för collection-group-gotchan
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Medvetna förenklingar
+
+- **Autentiseringsskydd är klientsidan** (`RequireAuth`/`RequireAdmin` redirectar efter mount),
+  inte server-side session-cookies. Bra nog för en demo, men skulle bytas ut mot
+  Firebase session-cookies + middleware för produktion.
+- **Biljettköp går via en Server Action**, inte en direkt klient-skrivning till Firestore -
+  det är där ID-token verifieras och biljettnumreringen görs i en transaktion.
+- **Admin-listning av alla biljetter går också via Server Actions** (Admin SDK), eftersom
+  Firestore-regler för `list`/collectionGroup-frågor inte kan uttrycka en säker
+  "ägare ELLER admin"-disjunktion statiskt.
+- **Stripe är medvetet inte kopplat in än** - köpflödet skapar biljetter direkt (mockat
+  "köp"). Läggs till som ett separat lager när/om det behövs.
+- **E-postnotis vid vinst** är inte byggt - "Dra vinnare" markerar bara biljetten som
+  vinnare i Firestore.

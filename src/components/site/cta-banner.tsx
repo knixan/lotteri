@@ -1,4 +1,5 @@
 import { ArrowRight, Shield } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 
@@ -19,10 +20,13 @@ export function CtaBanner() {
         </div>
         <Button
           size="lg"
+          asChild
           className="w-full bg-brand-accent text-brand-accent-foreground hover:bg-brand-accent/90 sm:w-auto"
         >
-          Köp lotter nu
-          <ArrowRight className="size-4" />
+          <Link href="/lotteriet">
+            Köp lotter nu
+            <ArrowRight className="size-4" />
+          </Link>
         </Button>
       </div>
     </section>

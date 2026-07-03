@@ -2,9 +2,43 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Locked down by default. Open specific collections up as they're built.
-    match /{document=**} {
-      allow read, write: if false;
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    match /users/{uid} {
+      allow read: if isSignedIn() && (request.auth.uid == uid || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow update: if isSignedIn() && request.auth.uid == uid &&
+        request.resource.data.role == resource.data.role; // can't self-promote to admin
+      allow delete: if false;
+    }
+
+    match /lotteries/{lotteryId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // A plain nested `match /lotteries/{id} { match /tickets/{id} {...} }`
+    // only applies to direct subcollection access, not collectionGroup
+    // queries. The recursive `{path=**}` wildcard is required for the
+    // "mina sidor" collectionGroup("tickets") query to be covered at all.
+    match /{path=**}/tickets/{ticketId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      // "list" (incl. collectionGroup) requests must match the query's
+      // where-clause exactly - Firestore can't statically prove an ||
+      // isAdmin() branch is safe, so admin ticket listing goes through a
+      // Server Action with the Admin SDK instead of this rule.
+      allow list: if isSignedIn() && request.auth.uid == resource.data.userId;
+      // Purchases go through a Server Action using the Admin SDK (which
+      // bypasses rules) so ticket numbering can be done in a transaction.
+      // Client writes are never trusted here.
+      allow write: if false;
     }
   }
 }

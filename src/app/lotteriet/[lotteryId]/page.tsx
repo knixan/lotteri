@@ -8,6 +8,10 @@ import { PurchaseForm } from "@/components/lotteries/purchase-form";
 import { formatDrawCountdown, formatDrawDate } from "@/lib/date";
 import { getLotteryById } from "@/lib/firestore/lotteries";
 
+// Ticket counts and lottery status change on every purchase/admin edit, so
+// this must never be baked into a static build at deploy time.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

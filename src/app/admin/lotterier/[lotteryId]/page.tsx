@@ -13,6 +13,10 @@ import {
   getTicketsForLottery,
 } from "@/lib/firestore/lotteries";
 
+// Admin data (ticket sales, buyer info) must never be baked into a static
+// build shared across all requests.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({
   params,
 }: {

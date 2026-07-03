@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
 import {
   adminLotteryInputSchema,
   type AdminLotteryInput,
@@ -11,8 +11,8 @@ import {
 type ActionResult = { success: true } | { success: false; error: string };
 
 async function requireAdminUid(idToken: string): Promise<string> {
-  const decoded = await adminAuth.verifyIdToken(idToken);
-  const userDoc = await adminDb.collection("users").doc(decoded.uid).get();
+  const decoded = await getAdminAuth().verifyIdToken(idToken);
+  const userDoc = await getAdminDb().collection("users").doc(decoded.uid).get();
   if (userDoc.data()?.role !== "admin") {
     throw new Error("NOT_ADMIN");
   }
@@ -46,7 +46,7 @@ export async function createLottery(
     };
   }
 
-  const ref = adminDb.collection("lotteries").doc();
+  const ref = getAdminDb().collection("lotteries").doc();
   await ref.set({
     ...parsed.data,
     ticketsSold: 0,
@@ -76,7 +76,10 @@ export async function updateLottery(
     };
   }
 
-  await adminDb.collection("lotteries").doc(lotteryId).update(parsed.data);
+  await getAdminDb()
+    .collection("lotteries")
+    .doc(lotteryId)
+    .update(parsed.data);
 
   revalidateLotteryPaths(lotteryId);
   return { success: true };
@@ -95,7 +98,7 @@ export async function drawWinner(
     };
   }
 
-  const lotteryRef = adminDb.collection("lotteries").doc(lotteryId);
+  const lotteryRef = getAdminDb().collection("lotteries").doc(lotteryId);
   const lotteryDoc = await lotteryRef.get();
   if (!lotteryDoc.exists) {
     return { success: false, error: "Lotteriet kunde inte hittas." };

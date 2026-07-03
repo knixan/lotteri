@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import { adminAuth, adminDb } from "@/lib/firebase/admin";
+import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
 import { purchaseTicketSchema } from "@/lib/types/lottery";
 
 type PurchaseResult = { success: true } | { success: false; error: string };
@@ -18,7 +18,7 @@ export async function purchaseTickets(
 
   let decoded;
   try {
-    decoded = await adminAuth.verifyIdToken(idToken);
+    decoded = await getAdminAuth().verifyIdToken(idToken);
   } catch {
     return {
       success: false,
@@ -27,10 +27,10 @@ export async function purchaseTickets(
   }
 
   const { lotteryId, quantity } = parsed.data;
-  const lotteryRef = adminDb.collection("lotteries").doc(lotteryId);
+  const lotteryRef = getAdminDb().collection("lotteries").doc(lotteryId);
 
   try {
-    await adminDb.runTransaction(async (tx) => {
+    await getAdminDb().runTransaction(async (tx) => {
       const lotteryDoc = await tx.get(lotteryRef);
       if (!lotteryDoc.exists) {
         throw new Error("NOT_FOUND");

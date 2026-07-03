@@ -42,6 +42,9 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 .firebase/
+# service account keys - never commit these
+*firebase-adminsdk*.json
+serviceAccountKey.json
 
 # typescript
 *.tsbuildinfo

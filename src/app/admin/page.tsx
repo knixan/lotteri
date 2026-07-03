@@ -9,6 +9,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatDrawDate } from "@/lib/date";
 import { getLotteries } from "@/lib/firestore/lotteries";
 
+// Admin data (ticket sales, buyer info) must never be baked into a static
+// build shared across all requests.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Admin – Mjölby Idrottslotteri",
 };

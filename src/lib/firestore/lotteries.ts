@@ -1,6 +1,6 @@
 import "server-only";
 
-import { adminDb } from "@/lib/firebase/admin";
+import { getAdminDb } from "@/lib/firebase/admin";
 import {
   lotterySchema,
   ticketSchema,
@@ -9,7 +9,7 @@ import {
 } from "@/lib/types/lottery";
 
 export async function getLotteries(): Promise<Lottery[]> {
-  const snapshot = await adminDb
+  const snapshot = await getAdminDb()
     .collection("lotteries")
     .orderBy("drawAt")
     .get();
@@ -21,7 +21,7 @@ export async function getLotteries(): Promise<Lottery[]> {
 }
 
 export async function getLotteryById(id: string): Promise<Lottery | null> {
-  const doc = await adminDb.collection("lotteries").doc(id).get();
+  const doc = await getAdminDb().collection("lotteries").doc(id).get();
   if (!doc.exists) return null;
 
   const result = lotterySchema.safeParse({ id: doc.id, ...doc.data() });
@@ -29,7 +29,7 @@ export async function getLotteryById(id: string): Promise<Lottery | null> {
 }
 
 export async function getUserTickets(userId: string): Promise<Ticket[]> {
-  const snapshot = await adminDb
+  const snapshot = await getAdminDb()
     .collectionGroup("tickets")
     .where("userId", "==", userId)
     .get();
@@ -44,7 +44,7 @@ export async function getUserTickets(userId: string): Promise<Ticket[]> {
 export async function getTicketsForLottery(
   lotteryId: string,
 ): Promise<Ticket[]> {
-  const snapshot = await adminDb
+  const snapshot = await getAdminDb()
     .collection("lotteries")
     .doc(lotteryId)
     .collection("tickets")

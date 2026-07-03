@@ -1,5 +1,7 @@
 "use server";
 
+import { randomInt } from "node:crypto";
+
 import { revalidatePath } from "next/cache";
 
 import { getAdminAuth, getAdminDb } from "@/lib/firebase/admin";
@@ -139,10 +141,10 @@ export async function drawWinner(
     return { success: false, error: "Inga sålda lotter att dra bland." };
   }
 
-  const winnerDoc =
-    ticketsSnapshot.docs[
-      Math.floor(Math.random() * ticketsSnapshot.docs.length)
-    ];
+  // A fair draw needs a CSPRNG, not Math.random() - its PRNG state isn't
+  // meant to be unpredictable, so a winner picked from it is in theory
+  // predictable/manipulable.
+  const winnerDoc = ticketsSnapshot.docs[randomInt(ticketsSnapshot.docs.length)];
   await winnerDoc.ref.update({ isWinner: true });
 
   revalidateLotteryPaths(lotteryId);

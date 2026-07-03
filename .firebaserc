@@ -1,5 +1,6 @@
 {
   "projects": {
-    "default": "demo-mjolby-idrottslotteri"
+    "default": "demo-mjolby-idrottslotteri",
+    "production": "lotteri-18eb6"
   }
 }

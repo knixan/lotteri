@@ -15,7 +15,7 @@ import {
 type ActionResult = { success: true } | { success: false; error: string };
 
 async function requireAdminUid(idToken: string): Promise<string> {
-  const decoded = await getAdminAuth().verifyIdToken(idToken);
+  const decoded = await getAdminAuth().verifyIdToken(idToken, true);
   const userDoc = await getAdminDb().collection("users").doc(decoded.uid).get();
   if (userDoc.data()?.role !== "admin") {
     throw new Error("NOT_ADMIN");

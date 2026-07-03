@@ -18,7 +18,7 @@ export async function purchaseTickets(
 
   let decoded;
   try {
-    decoded = await getAdminAuth().verifyIdToken(idToken);
+    decoded = await getAdminAuth().verifyIdToken(idToken, true);
   } catch {
     return {
       success: false,
